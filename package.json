@@ -1,0 +1,21 @@
+{
+  "name": "todox",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm install --prefix backend && npm install --prefix frontend/Main && npm run build --prefix frontend/Main",
+    "start": "npm run start --prefix backend"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LocMixi2-5/TodoX.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LocMixi2-5/TodoX/issues"
+  },
+  "homepage": "https://github.com/LocMixi2-5/TodoX#readme"
+}

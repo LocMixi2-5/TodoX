@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "todox": "file:.."
+  }
+}
