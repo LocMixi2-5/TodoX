@@ -41,10 +41,14 @@ app.use("/api/tasks", taskRoute);
 app.use("/api/schedules", scheduleRoute);
 
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(process.cwd(), "frontend/dist")));
+  // Khi chạy production trên Render, CWD thường là thư mục backend (do lệnh --prefix backend)
+  // Ta cần đi ra ngoài thư mục backend để vào frontend/dist
+  const frontendPath = path.join(process.cwd(), "..", "frontend", "dist");
+  
+  app.use(express.static(frontendPath));
 
   app.get("*", (req, res) => {
-    res.sendFile(path.join(process.cwd(), "frontend/dist/index.html"));
+    res.sendFile(path.join(frontendPath, "index.html"));
   });
 }
 
