@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import StatsAndFilters from "@/components/StatsAndFilters";
 import TaskList from "@/components/TaskList";
 import TaskListPagination from "@/components/TaskListPagination";
-import React, { useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import api from "@/lib/axios";
 import { visibleTaskLimit } from "@/lib/data";
@@ -14,9 +14,9 @@ import { Wand2 } from "lucide-react";
 
 const HomePage = () => {
     const [taskBuffer, setTaskBuffer] = useState([]);
-    const [ activeTaskCount, setActiveTaskCount ] = useState(0);
-    const [ completeTaskCount, setCompleteTaskCount] = useState(0);
-    const [ filter, setFilter] = useState("all");
+    const [activeTaskCount, setActiveTaskCount] = useState(0);
+    const [completeTaskCount, setCompleteTaskCount] = useState(0);
+    const [filter, setFilter] = useState("all");
     const [dateQuery, setDateQuery] = useState('today');
     const [page, setPage] = useState(1);
 
@@ -31,25 +31,24 @@ const HomePage = () => {
     //logic đếm việc và cho phép backend
     const fetchTasks = async () => {
         try {
-                const res = await api.get(`/tasks?filter=${dateQuery}`);
+            const res = await api.get(`/tasks?filter=${dateQuery}`);
 
-                const {tasks , activeCount , completeCount} = res.data;
+            const { tasks, activeCount, completeCount } = res.data;
 
-                setTaskBuffer(tasks);
-                setActiveTaskCount(activeCount);
-                setCompleteTaskCount(completeCount);
+            setTaskBuffer(tasks);
+            setActiveTaskCount(activeCount);
+            setCompleteTaskCount(completeCount);
 
-            }
-         catch (error) {
+        }
+        catch (error) {
             console.error("Lỗi xảy ra khi truy xuất tasks:", error);
             toast.error("Lỗi xảy ra khi truy xuất tasks.");
-         }
+        }
     };
 
     // biến 
     const filteredTasks = taskBuffer.filter((task) => {
-        switch (filter) 
-        {
+        switch (filter) {
             case 'active':
                 return task.status === 'active';
             case 'completed':
@@ -60,7 +59,7 @@ const HomePage = () => {
     });
 
     const handlePrev = () => {
-        if(page > 1) {
+        if (page > 1) {
             setPage((prev) => prev - 1);
         }
     };
@@ -69,20 +68,20 @@ const HomePage = () => {
         (page - 1) * visibleTaskLimit,
         page * visibleTaskLimit
     );
-    
-    if(visibleTasks.length === 0){
+
+    if (visibleTasks.length === 0) {
         handlePrev();
     }
 
     const totalPages = Math.ceil(filteredTasks.length / visibleTaskLimit);
 
-   
+
     const handleTaskChanged = () => {
         fetchTasks();
     };
 
     const handleNext = () => {
-        if(page < totalPages) {
+        if (page < totalPages) {
             setPage((prev) => prev + 1);
         }
     };
@@ -93,12 +92,12 @@ const HomePage = () => {
 
 
     return (
-    <div className="min-h-screen w-full bg-[#f0fdfa] relative">
-        {/* Mint Fresh Breeze Background */}
-        <div
-            className="absolute inset-0 z-0"
-            style={{
-            backgroundImage: `
+        <div className="min-h-screen w-full bg-[#f0fdfa] relative">
+            {/* Mint Fresh Breeze Background */}
+            <div
+                className="absolute inset-0 z-0"
+                style={{
+                    backgroundImage: `
                 linear-gradient(45deg, 
                 rgba(240,253,250,1) 0%, 
                 rgba(204,251,241,0.7) 30%, 
@@ -109,71 +108,71 @@ const HomePage = () => {
                 radial-gradient(circle at 80% 70%, rgba(167,243,208,0.5) 0%, transparent 50%),
                 radial-gradient(circle at 20% 80%, rgba(209,250,229,0.6) 0%, transparent 45%)
             `,
-            }}
-        />
-        {/* Your Content/Components */}
-    
+                }}
+            />
+            {/* Your Content/Components */}
+
             <div className="container pt-8 mx-auto relative z-10">
-            <div className="w-full max-w-2xl mx-auto space-y-6 p-6">
+                <div className="w-full max-w-2xl mx-auto space-y-6 p-6">
 
-                {/* Đầu trang*/}
-                <Header/>
+                    {/* Đầu trang*/}
+                    <Header />
 
-                {/* Tạo việc*/}
-                <AddTask
-                    handleNewTaskAdded = {handleTaskChanged}
-                />
-
-                {/*Kiểm kê và bộ lọc*/}
-                <StatsAndFilters
-                    filter = {filter}
-                    setFilter = {setFilter}
-                    activeTasksCount={activeTaskCount}
-                    completedTasksCount={completeTaskCount}
-                />
-
-                {/* Danh sách nhiệm vụ*/}
-                <TaskList 
-                    filteredTasks={visibleTasks}
-                    filter={filter}
-                    handleTaskChanged={handleTaskChanged}
-                    
-                />
-
-                {/* Nút Sinh AI Lịch */}
-                <div className="flex justify-center my-6">
-                    <Link to="/schedule" className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-8 py-3 rounded-xl shadow-lg shadow-emerald-600/20 flex items-center gap-2 transition-all transform hover:scale-105 active:scale-95">
-                        <Wand2 className="w-5 h-5" />
-                        Trải nghiệm Sinh Thời Khóa Biểu thông minh bằng AI
-                    </Link>
-                </div>
-
-                {/* Phân trang và Lọc theo Date */}
-                <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
-                    <TaskListPagination
-                        handleNext={handleNext}
-                        handlePrev={handlePrev}
-                        handlePageChange={handlePageChange}
-                        page={page}
-                        totalPages={totalPages }
+                    {/* Tạo việc*/}
+                    <AddTask
+                        handleNewTaskAdded={handleTaskChanged}
                     />
-                    <DateTimeFilter
-                        dateQuery = {dateQuery} 
-                        setDateQuery = {setDateQuery}
+
+                    {/*Kiểm kê và bộ lọc*/}
+                    <StatsAndFilters
+                        filter={filter}
+                        setFilter={setFilter}
+                        activeTasksCount={activeTaskCount}
+                        completedTasksCount={completeTaskCount}
+                    />
+
+                    {/* Danh sách nhiệm vụ*/}
+                    <TaskList
+                        filteredTasks={visibleTasks}
+                        filter={filter}
+                        handleTaskChanged={handleTaskChanged}
+
+                    />
+
+                    {/* Nút Sinh AI Lịch */}
+                    <div className="flex justify-center my-6">
+                        <Link to="/schedule" className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-8 py-3 rounded-xl shadow-lg shadow-emerald-600/20 flex items-center gap-2 transition-all transform hover:scale-105 active:scale-95">
+                            <Wand2 className="w-5 h-5" />
+                            Sinh thời khóa biểu
+                        </Link>
+                    </div>
+
+                    {/* Phân trang và Lọc theo Date */}
+                    <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
+                        <TaskListPagination
+                            handleNext={handleNext}
+                            handlePrev={handlePrev}
+                            handlePageChange={handlePageChange}
+                            page={page}
+                            totalPages={totalPages}
+                        />
+                        <DateTimeFilter
+                            dateQuery={dateQuery}
+                            setDateQuery={setDateQuery}
+                        />
+                    </div>
+
+                    {/* Chân trang*/}
+                    <Footer
+                        activeTasksCount={activeTaskCount}
+                        completedTasksCount={completeTaskCount}
                     />
                 </div>
-
-                {/* Chân trang*/}
-                <Footer 
-                    activeTasksCount={activeTaskCount}
-                    completedTasksCount={completeTaskCount}
-                />
             </div>
         </div>
-    </div>   
-    
+
     );
-    
+
 };
 
 export default HomePage;

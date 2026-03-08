@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import api from "../lib/axios";
 import { toast } from "sonner";
-import { Loader2, Wand2, Calendar as CalendarIcon, ArrowLeft, ChevronLeft, ChevronRight, Trash2 } from "lucide-react";
+import { Loader2, Calendar as CalendarIcon, ArrowLeft, ChevronLeft, ChevronRight, Trash2 } from "lucide-react";
 import WeeklyCalendar from "../components/WeeklyCalendar";
 import { Link } from "react-router";
 
@@ -41,7 +41,6 @@ function isSameWeek(a, b) {
 }
 
 export default function SchedulePage() {
-    const [prompt, setPrompt] = useState("");
     const [isGenerating, setIsGenerating] = useState(false);
     const [schedules, setSchedules] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -262,19 +261,18 @@ export default function SchedulePage() {
                             Quay lại Dashboard
                         </Link>
                         <h1 className="text-3xl font-extrabold flex items-center gap-3 text-slate-800">
-                            <CalendarIcon className="text-teal-500 w-8 h-8"/> AI Smart Schedule
+                            <CalendarIcon className="text-teal-500 w-8 h-8"/> Smart Schedule
                         </h1>
                         <p className="text-slate-600 mt-2 max-w-2xl font-medium">
-                            Hãy nói cho AI biết bạn cần hoàn thành những gì, hệ thống sẽ tự động ghép nối 
-                            và tối ưu thời gian lên biểu đồ 7 ngày (từ 06:00 đến 00:00).
+                            Tự động quản lý và tối ưu hóa thời gian làm việc của bạn trên biểu đồ 7 ngày (từ 06:00 đến 00:00).
                         </p>
                     </div>
                 </div>
 
-                {/* Prompt Input Area */}
+                {/* Input Area */}
                 <div className="bg-white/60 border border-white/80 rounded-2xl p-6 shadow-xl backdrop-blur-xl">
                     <div className="flex items-center gap-2 mb-4 text-slate-700">
-                        <Wand2 className="w-5 h-5 text-teal-600" />
+                        <CalendarIcon className="w-5 h-5 text-teal-600" />
                         <h3 className="font-bold text-lg">Khởi tạo lịch học / làm việc</h3>
                     </div>
                     

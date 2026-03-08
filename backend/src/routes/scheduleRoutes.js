@@ -1,6 +1,5 @@
 import express from "express";
 import {
-  generateSchedule,
   getWeeklySchedule,
   deleteScheduleBlock,
   deleteWeekSchedule,
@@ -12,7 +11,6 @@ const router = express.Router();
 
 router.use(protectRoute);
 
-router.post("/generate", generateSchedule);
 router.post("/add", addSchedule);
 router.get("/weekly", getWeeklySchedule);
 router.delete("/block/:id", deleteScheduleBlock);
