@@ -1,9 +1,9 @@
 services:
-  # Backend Web Service
+  # Backend Web Service (Free Plan)
   - type: web
     name: todox-backend
     env: node
-    plan: free
+    plan: free # Explicitly using free plan
     rootDir: backend
     buildCommand: npm install
     startCommand: npm start
