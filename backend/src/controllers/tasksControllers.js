@@ -29,7 +29,7 @@ export const getAllTasks = async (request, response) => {
     
   }
 
-  const query = startDate ? {createdAt: {$gte: startDate}} : {};
+  const query = startDate ? { createdAt: { $gte: startDate }, userId: request.user._id } : { userId: request.user._id };
 
   try{
         const result = await Task.aggregate([
@@ -60,7 +60,7 @@ export const getAllTasks = async (request, response) => {
 export const createTask = async (req, res) => {
     try{
         const {title} = req.body;
-        const task = new Task({title});
+        const task = new Task({ title, userId: req.user._id });
 
         const newTask = await task.save();
         res.status(201).json(newTask);
@@ -74,8 +74,8 @@ export const createTask = async (req, res) => {
 export const updateTask = async (req, res) => {
   try {
     const { title, status, completedAt } = req.body;
-    const updatedTask = await Task.findByIdAndUpdate(
-      req.params.id,
+    const updatedTask = await Task.findOneAndUpdate(
+      { _id: req.params.id, userId: req.user._id },
       {
         title,
         status,
@@ -100,7 +100,7 @@ export const updateTask = async (req, res) => {
 
 export const deleteTask = async (req, res) => {
     try {
-        const deleteTask = await Task.findByIdAndDelete(req.params.id);
+        const deleteTask = await Task.findOneAndDelete({ _id: req.params.id, userId: req.user._id });
 
         if(!deleteTask){
             return res.status(404).json({message: "Nhiệm vụ không tồn tại!"});
