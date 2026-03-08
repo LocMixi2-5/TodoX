@@ -158,7 +158,27 @@ export default function SchedulePage() {
         }
     };
 
+    // Generate schedule with conflict detection (Cho NLP)
+    const handleGenerate = async (forceOverwrite = false, builtPrompt = null) => {
+        const textToSend = builtPrompt || prompt;
+        if (!textToSend.trim()) return;
 
+        setIsGenerating(true);
+        try {
+            const res = await api.post("/schedules/generate", {
+                promptText: textToSend,
+                weekStart: selectedWeek.toISOString(),
+                forceOverwrite,
+            });
+            toast.success("Đã sinh thời khóa biểu thành công!");
+            setSchedules(res.data);
+            setPrompt("");
+        } catch (error) {
+            handleError(error, () => handleGenerate(true, textToSend));
+        } finally {
+            setIsGenerating(false);
+        }
+    };
 
     // Xoá 1 block
     const handleDeleteBlock = async (blockId) => {
@@ -412,7 +432,7 @@ export default function SchedulePage() {
                         <div className="w-full py-24 border-2 border-dashed border-teal-200 bg-white/30 rounded-2xl flex flex-col items-center justify-center text-slate-500">
                             <CalendarIcon className="w-16 h-16 mb-4 text-teal-300 opacity-60" />
                             <p className="font-semibold">Chưa có lịch trình nào cho tuần này.</p>
-                            <p className="text-sm mt-1 text-slate-400">Hãy thêm các ca học ở trên hoặc chọn tuần khác.</p>
+                            <p className="text-sm mt-1 text-slate-400">Hãy tạo bằng AI ở trên hoặc chọn tuần khác.</p>
                         </div>
                     ) : (
                         <WeeklyCalendar schedules={schedules} onDeleteBlock={handleDeleteBlock} />
