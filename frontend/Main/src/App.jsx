@@ -6,6 +6,7 @@ import HomePage from "./pages/HomePage";
 import NotFound from "./pages/NotFound";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
+import SchedulePage from "./pages/SchedulePage";
 import { Loader2 } from "lucide-react";
 
 function App() {
@@ -40,6 +41,10 @@ function App() {
           <Route
             path="/signup"
             element={!authUser ? <SignUpPage /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/schedule"
+            element={authUser ? <SchedulePage /> : <Navigate to="/login" />}
           />
 
           <Route

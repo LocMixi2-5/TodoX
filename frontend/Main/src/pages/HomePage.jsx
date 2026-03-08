@@ -9,6 +9,8 @@ import React, { useEffect, useState} from "react";
 import { toast } from "sonner";
 import api from "@/lib/axios";
 import { visibleTaskLimit } from "@/lib/data";
+import { Link } from "react-router";
+import { Wand2 } from "lucide-react";
 
 const HomePage = () => {
     const [taskBuffer, setTaskBuffer] = useState([]);
@@ -137,6 +139,14 @@ const HomePage = () => {
                     handleTaskChanged={handleTaskChanged}
                     
                 />
+
+                {/* Nút Sinh AI Lịch */}
+                <div className="flex justify-center my-6">
+                    <Link to="/schedule" className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-8 py-3 rounded-xl shadow-lg shadow-emerald-600/20 flex items-center gap-2 transition-all transform hover:scale-105 active:scale-95">
+                        <Wand2 className="w-5 h-5" />
+                        Trải nghiệm Sinh Thời Khóa Biểu thông minh bằng AI
+                    </Link>
+                </div>
 
                 {/* Phân trang và Lọc theo Date */}
                 <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">

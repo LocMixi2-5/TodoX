@@ -1,6 +1,7 @@
 import express from "express";
 import taskRoute from "./routes/tasksRouters.js";
 import authRoute from "./routes/authRoutes.js";
+import scheduleRoute from "./routes/scheduleRoutes.js";
 import { connectDB } from "./config/db.js";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -19,15 +20,14 @@ import cookieParser from "cookie-parser";
 app.use(express.json());
 app.use(cookieParser());
 
-if (process.env.NODE_ENV !== "production") {
-  app.use(cors({ 
-    origin: "http://localhost:5173",
-    credentials: true,
-  }));
-}
+app.use(cors({ 
+  origin: "http://localhost:5173",
+  credentials: true,
+}));
 
 app.use("/api/auth", authRoute);
 app.use("/api/tasks", taskRoute);
+app.use("/api/schedules", scheduleRoute);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/Main/dist")));
