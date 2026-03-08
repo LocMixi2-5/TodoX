@@ -16,7 +16,7 @@ services:
         generateValue: true
 
   # Frontend Static Site
-  - type: static_site
+  - type: web
     name: todox-frontend
     env: static
     plan: free
@@ -28,4 +28,4 @@ services:
         fromService:
           type: web
           name: todox-backend
-          property: host
+          property: url
