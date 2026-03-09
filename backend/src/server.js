@@ -9,6 +9,7 @@ import { rateLimit } from "express-rate-limit";
 import taskRoute from "./routes/tasksRouters.js";
 import authRoute from "./routes/authRoutes.js";
 import scheduleRoute from "./routes/scheduleRoutes.js";
+import analyticsRoute from "./routes/analyticsRoutes.js";
 import { connectDB } from "./config/db.js";
 
 dotenv.config();
@@ -48,6 +49,7 @@ app.use(
 app.use("/api/auth", authRoute);
 app.use("/api/tasks", taskRoute);
 app.use("/api/schedules", scheduleRoute);
+app.use("/api/analytics", analyticsRoute);
 
 // health check (giữ server Render không sleep)
 app.get("/api/health", (req, res) => {

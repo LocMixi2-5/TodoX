@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import api from "@/lib/axios";
 import { visibleTaskLimit } from "@/lib/data";
 import { Link } from "react-router";
-import { Calendar } from "lucide-react";
+import { Calendar, BarChart3 } from "lucide-react";
 
 const HomePage = () => {
     const [taskBuffer, setTaskBuffer] = useState([]);
@@ -139,11 +139,15 @@ const HomePage = () => {
 
                     />
 
-                    {/* Nút Sinh Lịch */}
-                    <div className="flex justify-center my-6">
-                        <Link to="/schedule" className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-8 py-3 rounded-xl shadow-lg shadow-emerald-600/20 flex items-center gap-2 transition-all transform hover:scale-105 active:scale-95">
+                    {/* Nút Lịch & Phân tích */}
+                    <div className="flex justify-center gap-3 my-6">
+                        <Link to="/schedule" className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-6 py-3 rounded-xl shadow-lg shadow-emerald-600/20 flex items-center gap-2 transition-all transform hover:scale-105 active:scale-95">
                             <Calendar className="w-5 h-5" />
-                            Thời khóa biểu của tôi
+                            Thời khóa biểu
+                        </Link>
+                        <Link to="/analytics" className="bg-violet-600 hover:bg-violet-500 text-white font-medium px-6 py-3 rounded-xl shadow-lg shadow-violet-600/20 flex items-center gap-2 transition-all transform hover:scale-105 active:scale-95">
+                            <BarChart3 className="w-5 h-5" />
+                            Phân tích
                         </Link>
                     </div>
 

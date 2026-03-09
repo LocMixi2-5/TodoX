@@ -7,6 +7,7 @@ import NotFound from "./pages/NotFound";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import SchedulePage from "./pages/SchedulePage";
+import AnalyticsPage from "./pages/AnalyticsPage";
 import { Loader2 } from "lucide-react";
 
 function App() {
@@ -45,6 +46,10 @@ function App() {
           <Route
             path="/schedule"
             element={authUser ? <SchedulePage /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/analytics"
+            element={authUser ? <AnalyticsPage /> : <Navigate to="/login" />}
           />
 
           <Route

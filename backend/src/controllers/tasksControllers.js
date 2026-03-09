@@ -59,8 +59,8 @@ export const getAllTasks = async (request, response) => {
 
 export const createTask = async (req, res) => {
     try{
-        const {title} = req.body;
-        const task = new Task({ title, userId: req.user._id });
+        const {title, deadline} = req.body;
+        const task = new Task({ title, deadline: deadline || null, userId: req.user._id });
 
         const newTask = await task.save();
         res.status(201).json(newTask);
@@ -73,13 +73,14 @@ export const createTask = async (req, res) => {
 
 export const updateTask = async (req, res) => {
   try {
-    const { title, status, completedAt } = req.body;
+    const { title, status, completedAt, deadline } = req.body;
     const updatedTask = await Task.findOneAndUpdate(
       { _id: req.params.id, userId: req.user._id },
       {
         title,
         status,
-        completedAt
+        completedAt,
+        deadline
       },
       { new: true } // trả về document đã update
     );

@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import { Card } from "./ui/card";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { Plus } from "lucide-react";
+import { Plus, CalendarClock } from "lucide-react";
 import { toast } from "sonner";
 import api from "@/lib/axios";
 
 const AddTask = ({ handleNewTaskAdded }) => {
 
     const [newTaskTitle, setNewTaskTitle] = useState("");
+    const [deadline, setDeadline] = useState("");
+    const [showDeadline, setShowDeadline] = useState(false);
 
 
     const addTask = async () => {
@@ -16,7 +18,7 @@ const AddTask = ({ handleNewTaskAdded }) => {
         {
             try{
                 await api.post("/tasks",
-                    { title: newTaskTitle});
+                    { title: newTaskTitle, deadline: deadline || null });
                 toast.success(`Nhiệm vụ ${newTaskTitle} đã được thêm vào.`);
                 handleNewTaskAdded();
             } catch (error) {
@@ -26,6 +28,8 @@ const AddTask = ({ handleNewTaskAdded }) => {
             }
 
             setNewTaskTitle("");
+            setDeadline("");
+            setShowDeadline(false);
         }
         else 
         {
@@ -52,23 +56,54 @@ const AddTask = ({ handleNewTaskAdded }) => {
                     onKeyPress = {handleKeyPress}
                 />
 
-                <Button
-                    variant = "gradient"
-                    size = "lg"
-                    className="px-4"
-                    onClick = {addTask}
-                    disabled = {!newTaskTitle.trim()}
-                >
-                    <Plus
-                        className="size-4"
-                    />
+                <div className="flex gap-2">
+                    <Button
+                        variant="ghost"
+                        size="lg"
+                        className={`px-3 ${showDeadline ? 'text-violet-600 bg-violet-50' : 'text-zinc-400'}`}
+                        onClick={() => setShowDeadline(!showDeadline)}
+                        title="Đặt hạn chót"
+                    >
+                        <CalendarClock className="size-5" />
+                    </Button>
 
-                    Thêm
-                          
+                    <Button
+                        variant = "gradient"
+                        size = "lg"
+                        className="px-4"
+                        onClick = {addTask}
+                        disabled = {!newTaskTitle.trim()}
+                    >
+                        <Plus
+                            className="size-4"
+                        />
 
-                </Button>
+                        Thêm
+                              
+
+                    </Button>
+                </div>
             </div>
 
+            {showDeadline && (
+                <div className="mt-3 flex items-center gap-2">
+                    <span className="text-sm text-zinc-500">Hạn chót:</span>
+                    <input
+                        type="datetime-local"
+                        value={deadline}
+                        onChange={(e) => setDeadline(e.target.value)}
+                        className="flex-1 h-9 px-3 text-sm rounded-lg border border-zinc-200 bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-400"
+                    />
+                    {deadline && (
+                        <button
+                            onClick={() => { setDeadline(""); setShowDeadline(false); }}
+                            className="text-xs text-red-500 hover:text-red-700"
+                        >
+                            Xóa
+                        </button>
+                    )}
+                </div>
+            )}
 
         </Card>
     );

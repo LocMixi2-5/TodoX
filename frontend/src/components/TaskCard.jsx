@@ -141,7 +141,7 @@ const TaskCard = ({ task, index, handleTaskChanged }) => {
                     )}
 
                     {/*Ngày tạo && ngày hoàn thành*/}
-                    <div className="flex items-center gap-2 mt-1">
+                    <div className="flex items-center gap-2 mt-1 flex-wrap">
                         <Calendar className="size-3 text-muted-foreground" />
                         <span className="text-xs text-muted-foreground">
                             {new Date(task.createdAt).toLocaleString()}
@@ -154,6 +154,15 @@ const TaskCard = ({ task, index, handleTaskChanged }) => {
                                     {new Date(task.completedAt).toLocaleString()}
                                 </span>
                             </>
+                        )}
+                        {task.deadline && task.status !== "complete" && (
+                            <span className={`text-xs px-1.5 py-0.5 rounded-md font-medium ${
+                                new Date(task.deadline) < new Date()
+                                    ? "bg-red-100 text-red-700"
+                                    : "bg-violet-100 text-violet-700"
+                            }`}>
+                                ⏰ {new Date(task.deadline).toLocaleDateString("vi-VN")}
+                            </span>
                         )}
                     </div>
                 </div>

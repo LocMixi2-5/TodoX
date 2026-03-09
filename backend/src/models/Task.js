@@ -12,6 +12,10 @@ const taskShcema = new mongoose.Schema(
             enum: ["active", "complete"],
             default: "active",
         },
+        deadline: {
+            type: Date,
+            default: null,
+        },
         completedAt: {
             type: Date,
             default: null,
