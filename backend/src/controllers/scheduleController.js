@@ -65,19 +65,22 @@ export const deleteWeekSchedule = async (req, res) => {
   }
 };
 
-// Thêm lịch trực tiếp (không qua AI)
 export const addSchedule = async (req, res) => {
   try {
-    const { taskName, dayOfWeek, startHour, endHour, location, instructor, weekStart: weekStartStr, forceOverwrite } = req.body;
+    const { taskName, dayOfWeek, daysOfWeek, startHour, endHour, location, instructor, weekStart: weekStartStr, forceOverwrite } = req.body;
     
-    if (!taskName || !dayOfWeek || startHour === undefined || endHour === undefined) {
+    // Support both single dayOfWeek and batch daysOfWeek
+    const days = daysOfWeek && Array.isArray(daysOfWeek) && daysOfWeek.length > 0
+      ? daysOfWeek
+      : dayOfWeek ? [dayOfWeek] : [];
+
+    if (!taskName || days.length === 0 || startHour === undefined || endHour === undefined) {
       return res.status(400).json({ error: "Thiếu thông tin bắt buộc." });
     }
 
     const weekStart = getMondayOfWeek(new Date(weekStartStr || new Date()));
-    const newBlock = { dayOfWeek, startHour, endHour, taskName, location, instructor };
 
-    // Kiểm tra trùng lặp
+    // Kiểm tra trùng lặp cho tất cả ngày được chọn
     const existingSchedules = await Schedule.find({ userId: req.user._id, weekStart });
     
     const isOverlapping = (a, b) => {
@@ -85,20 +88,25 @@ export const addSchedule = async (req, res) => {
         return a.startHour < b.endHour && a.endHour > b.startHour;
     };
 
-    const conflicts = existingSchedules.filter(s => isOverlapping(newBlock, s));
+    const allConflicts = [];
+    for (const day of days) {
+      const newBlock = { dayOfWeek: day, startHour, endHour };
+      const conflicts = existingSchedules.filter(s => isOverlapping(newBlock, s));
+      allConflicts.push(...conflicts);
+    }
 
-    if (conflicts.length > 0 && !forceOverwrite) {
-        const dayNames = { 2: "Thứ 2", 3: "Thứ 3", 4: "Thứ 4", 5: "Thứ 5", 6: "Thứ 6", 7: "Thứ 7", 8: "Chủ nhật" };
-        
-        const formatHour = (decimal) => {
-            const h = Math.floor(decimal);
-            const m = Math.round((decimal - h) * 60);
-            return `${h}:${m === 0 ? "00" : String(m).padStart(2, "0")}`;
-        };
+    const dayNames = { 2: "Thứ 2", 3: "Thứ 3", 4: "Thứ 4", 5: "Thứ 5", 6: "Thứ 6", 7: "Thứ 7", 8: "Chủ nhật" };
 
+    const formatHour = (decimal) => {
+        const h = Math.floor(decimal);
+        const m = Math.round((decimal - h) * 60);
+        return `${h}:${m === 0 ? "00" : String(m).padStart(2, "0")}`;
+    };
+
+    if (allConflicts.length > 0 && !forceOverwrite) {
         return res.status(409).json({
           error: "Trùng giờ!",
-          conflicts: conflicts.map(c => ({
+          conflicts: allConflicts.map(c => ({
               existingTask: c.taskName,
               newTask: taskName,
               day: dayNames[c.dayOfWeek],
@@ -107,11 +115,12 @@ export const addSchedule = async (req, res) => {
         });
     }
 
-    if (forceOverwrite && conflicts.length > 0) {
-      await Schedule.deleteMany({ _id: { $in: conflicts.map(c => c._id) } });
+    if (forceOverwrite && allConflicts.length > 0) {
+      const conflictIds = [...new Set(allConflicts.map(c => c._id.toString()))];
+      await Schedule.deleteMany({ _id: { $in: conflictIds } });
     }
 
-    // Colors mapping (reusing existing colors array logic if possible, or defining local fallback)
+    // Colors mapping
     const colors = ["#10b981", "#3b82f6", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899", "#06b6d4"];
     
     // Lấy màu từ task cùng tên trước đó hoặc sinh màu mới
@@ -124,17 +133,20 @@ export const addSchedule = async (req, res) => {
       color = colors[allTasks.length % colors.length];
     }
 
-    await Schedule.create({
+    // Tạo schedule cho tất cả ngày được chọn
+    const newEntries = days.map(day => ({
       userId: req.user._id,
       taskName,
-      dayOfWeek,
+      dayOfWeek: day,
       startHour,
       endHour,
       location: location || "",
       instructor: instructor || "",
       color,
       weekStart,
-    });
+    }));
+
+    await Schedule.insertMany(newEntries);
 
     const allSchedules = await Schedule.find({ userId: req.user._id, weekStart });
     res.status(201).json(allSchedules);

@@ -40,10 +40,21 @@ function isSameWeek(a, b) {
   return a.getTime() === b.getTime();
 }
 
+const DAY_OPTIONS = [
+    { value: 2, label: "T2" },
+    { value: 3, label: "T3" },
+    { value: 4, label: "T4" },
+    { value: 5, label: "T5" },
+    { value: 6, label: "T6" },
+    { value: 7, label: "T7" },
+    { value: 8, label: "CN" },
+];
+
 export default function SchedulePage() {
     const [isSaving, setIsSaving] = useState(false);
     const [schedules, setSchedules] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [selectedDays, setSelectedDays] = useState([]);
 
     // Week navigation
     const [selectedWeek, setSelectedWeek] = useState(() => getMondayOfWeek(new Date()));
@@ -85,22 +96,26 @@ export default function SchedulePage() {
         setSelectedWeek(currentWeekMonday);
     };
 
-    // Thêm lịch trực tiếp (cho form 5 ô)
+    const toggleDay = (dayValue) => {
+        setSelectedDays(prev =>
+            prev.includes(dayValue)
+                ? prev.filter(d => d !== dayValue)
+                : [...prev, dayValue]
+        );
+    };
+
+    // Thêm lịch trực tiếp (cho form 5 ô) — hỗ trợ nhiều ngày
     const handleAddDirect = async (forceOverwrite = false) => {
         const taskName = document.getElementById('input-task').value;
-        const dayText = document.getElementById('input-day').value;
         const start = document.getElementById('input-time-start').value;
         const end = document.getElementById('input-time-end').value;
         const location = document.getElementById('input-location').value;
         const instructor = document.getElementById('input-instructor').value;
 
-        if (!taskName || !dayText || !start || !end) {
-            toast.error("Vui lòng điền đủ thông tin bắt buộc!");
+        if (!taskName || selectedDays.length === 0 || !start || !end) {
+            toast.error("Vui lòng điền đủ thông tin bắt buộc (tên, chọn ít nhất 1 ngày, khung giờ)!");
             return;
         }
-
-        const dayMap = { "Thứ 2": 2, "Thứ 3": 3, "Thứ 4": 4, "Thứ 5": 5, "Thứ 6": 6, "Thứ 7": 7, "Chủ nhật": 8 };
-        const dayOfWeek = dayMap[dayText];
 
         const parseToDecimal = (timeStr) => {
             const [h, m] = timeStr.split(':').map(Number);
@@ -114,7 +129,7 @@ export default function SchedulePage() {
         try {
             const res = await api.post("/schedules/add", {
                 taskName,
-                dayOfWeek,
+                daysOfWeek: selectedDays,
                 startHour,
                 endHour,
                 location,
@@ -122,12 +137,14 @@ export default function SchedulePage() {
                 weekStart: selectedWeek.toISOString(),
                 forceOverwrite,
             });
-            toast.success("Đã thêm vào lịch trình thành công!");
+            const dayCount = selectedDays.length;
+            toast.success(`Đã thêm ${dayCount} ca vào lịch trình!`);
             setSchedules(res.data);
             // Clear form
             document.getElementById('input-task').value = "";
             document.getElementById('input-location').value = "";
             document.getElementById('input-instructor').value = "";
+            setSelectedDays([]);
         } catch (error) {
             handleError(error, () => handleAddDirect(true));
         } finally {
@@ -288,21 +305,25 @@ export default function SchedulePage() {
                             />
                         </div>
 
-                        {/* 2. Thứ */}
-                        <div className="flex flex-col gap-1.5">
-                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">2. Thứ <span className="text-red-500">*</span></label>
-                            <select 
-                                id="input-day"
-                                className="w-full bg-white/70 border border-slate-200/60 rounded-xl px-4 py-2.5 text-slate-700 focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400 transition-all font-bold appearance-none cursor-pointer shadow-sm"
-                            >
-                                <option value="Thứ 2">Thứ 2</option>
-                                <option value="Thứ 3">Thứ 3</option>
-                                <option value="Thứ 4">Thứ 4</option>
-                                <option value="Thứ 5">Thứ 5</option>
-                                <option value="Thứ 6">Thứ 6</option>
-                                <option value="Thứ 7">Thứ 7</option>
-                                <option value="Chủ nhật">Chủ nhật</option>
-                            </select>
+                        {/* 2. Chọn Thứ (nhiều ngày) */}
+                        <div className="flex flex-col gap-1.5 lg:col-span-3">
+                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">2. Chọn ngày <span className="text-red-500">*</span> <span className="text-slate-400 font-normal lowercase">(chọn nhiều)</span></label>
+                            <div className="flex items-center gap-2 flex-wrap">
+                                {DAY_OPTIONS.map(day => (
+                                    <button
+                                        key={day.value}
+                                        type="button"
+                                        onClick={() => toggleDay(day.value)}
+                                        className={`px-4 py-2.5 rounded-xl text-sm font-bold transition-all border shadow-sm cursor-pointer select-none ${
+                                            selectedDays.includes(day.value)
+                                                ? "bg-teal-500 text-white border-teal-500 shadow-md shadow-teal-500/30 scale-105"
+                                                : "bg-white/70 text-slate-600 border-slate-200/60 hover:border-teal-300 hover:bg-teal-50"
+                                        }`}
+                                    >
+                                        {day.label}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
 
                         {/* 3. Thời gian */}
