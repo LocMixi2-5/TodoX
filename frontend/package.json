@@ -37,7 +37,11 @@
     "@types/node": "^24.5.1",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
+<<<<<<< HEAD
     "@vitejs/plugin-react": "^5.0.0",
+=======
+    "@vitejs/plugin-react": "^5.1.4",
+>>>>>>> e1541fc817b0fc8ae2209ae71fab3e5c72f390f5
     "eslint": "^9.33.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",

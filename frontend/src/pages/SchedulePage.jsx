@@ -41,7 +41,7 @@ function isSameWeek(a, b) {
 }
 
 export default function SchedulePage() {
-    const [isGenerating, setIsGenerating] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
     const [schedules, setSchedules] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -110,7 +110,7 @@ export default function SchedulePage() {
         const startHour = parseToDecimal(start);
         const endHour = parseToDecimal(end);
 
-        setIsGenerating(true); // Dùng chung loading state
+        setIsSaving(true); 
         try {
             const res = await api.post("/schedules/add", {
                 taskName,
@@ -131,7 +131,7 @@ export default function SchedulePage() {
         } catch (error) {
             handleError(error, () => handleAddDirect(true));
         } finally {
-            setIsGenerating(false);
+            setIsSaving(false);
         }
     };
 
@@ -261,10 +261,10 @@ export default function SchedulePage() {
                             Quay lại Dashboard
                         </Link>
                         <h1 className="text-3xl font-extrabold flex items-center gap-3 text-slate-800">
-                            <CalendarIcon className="text-teal-500 w-8 h-8"/> Smart Schedule
+                            <CalendarIcon className="text-teal-500 w-8 h-8"/> Thời Khóa Biểu
                         </h1>
                         <p className="text-slate-600 mt-2 max-w-2xl font-medium">
-                            Tự động quản lý và tối ưu hóa thời gian làm việc của bạn trên biểu đồ 7 ngày (từ 06:00 đến 00:00).
+                            Quản lý lịch học và làm việc cá nhân của bạn trên biểu đồ 7 ngày (từ 06:00 đến 00:00).
                         </p>
                     </div>
                 </div>
@@ -348,12 +348,12 @@ export default function SchedulePage() {
 
                     <div className="flex justify-end pt-4 border-t border-slate-200/50">
                         <button 
-                            disabled={isGenerating}
+                            disabled={isSaving}
                             onClick={() => handleAddDirect(false)}
                             className="bg-gradient-to-r from-teal-400 to-emerald-500 hover:from-teal-500 hover:to-emerald-600 text-white px-8 py-3.5 rounded-xl flex items-center gap-2 font-bold shadow-lg shadow-emerald-500/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed transform hover:-translate-y-0.5"
                         >
-                            {isGenerating ? <Loader2 className="w-5 h-5 animate-spin" /> : <CalendarIcon className="w-5 h-5" />}
-                            {isGenerating ? "Đang xử lý..." : "Thêm vào lịch tuần"}
+                            {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <CalendarIcon className="w-5 h-5" />}
+                            {isSaving ? "Đang lưu..." : "Thêm vào lịch tuần"}
                         </button>
                     </div>
                 </div>
