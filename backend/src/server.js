@@ -66,6 +66,10 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile(path.join(frontendPath, "index.html"));
   });
 }
+else
+{
+  console.error("Không đủ quyền");
+}
 
 // connect DB rồi mới start server
 connectDB()

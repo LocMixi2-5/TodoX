@@ -9,7 +9,7 @@ export const Header = () => {
     <div className="space-y-3 text-center relative">
         {authUser && (
             <div className="absolute right-0 top-0 flex items-center gap-4">
-                <span className="text-sm font-medium text-zinc-600">Hi, {authUser.username}</span>
+                <span className="text-sm font-medium text-zinc-600">Halo, {authUser.username}</span>
                 <button 
                     onClick={logout}
                     className="p-2 text-zinc-500 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors flex items-center gap-2"
@@ -21,7 +21,7 @@ export const Header = () => {
             </div>
         )}
         <h1 className="text-5xl font-bold text-transparent bg-primary bg-clip-text">
-            TodoX for LocMixi
+            TodoX
         </h1>
         
         <p className="text-muted-foreground">

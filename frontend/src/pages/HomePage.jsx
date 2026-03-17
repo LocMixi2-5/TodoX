@@ -149,7 +149,7 @@ const HomePage = () => {
                             <BarChart3 className="w-5 h-5" />
                             Phân tích
                         </Link>
-                    </div>
+                    </div> 
 
                     {/* Phân trang và Lọc theo Date */}
                     <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
@@ -178,5 +178,6 @@ const HomePage = () => {
     );
 
 };
+
 
 export default HomePage;
